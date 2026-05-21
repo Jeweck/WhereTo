@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from 'react';
@@ -18,6 +17,7 @@ import {
   ChevronRight,
   ArrowLeft,
   Search,
+  Info
 } from 'lucide-react';
 import { 
   Dialog, 
@@ -28,8 +28,9 @@ import {
   DialogFooter
 } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
+import { format, parse, differenceInMinutes, startOfDay } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function RoomsPage() {
   const { facilities, bookings, upsertFacility, currentUser } = useStore();
@@ -77,6 +78,26 @@ export default function RoomsPage() {
     setNewRoom({ id: '', name: '', capacity: 20, purpose: 'Classroom', description: '', equipment: '' });
   };
 
+  // Timeline Helper
+  const hours = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
+  const HOUR_HEIGHT = 80;
+
+  const calculateBookingPosition = (startTime: string, endTime: string) => {
+    const start = parse(startTime, 'HH:mm', new Date());
+    const end = parse(endTime, 'HH:mm', new Date());
+    
+    // Calculate minutes from 1:00 AM
+    const timelineStart = parse('01:00', 'HH:mm', new Date());
+    
+    const minutesFromStart = differenceInMinutes(start, timelineStart);
+    const durationMinutes = differenceInMinutes(end, start);
+    
+    const top = (minutesFromStart / 60) * HOUR_HEIGHT;
+    const height = (durationMinutes / 60) * HOUR_HEIGHT;
+    
+    return { top, height };
+  };
+
   if (selectedRoomId && selectedRoom) {
     return (
       <div className="space-y-6 animate-in fade-in duration-500">
@@ -93,73 +114,110 @@ export default function RoomsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <Card className="lg:col-span-5 border-none shadow-xl overflow-hidden">
+          <Card className="lg:col-span-4 border-none shadow-xl overflow-hidden">
             <CardHeader className="bg-primary text-white">
               <CardTitle className="text-lg flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5" />
                 Select Date
               </CardTitle>
-              <CardDescription className="text-white/70">Pick a day to view its schedule.</CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center p-6 bg-white">
-              <div className="w-full max-w-xs mx-auto">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
-                  className="rounded-md border-none p-0"
-                  showOutsideDays={false}
-                />
-              </div>
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => date && setSelectedDate(date)}
+                className="rounded-md border-none p-0 w-full"
+                showOutsideDays={false}
+              />
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-7 border-none shadow-xl min-h-[450px]">
+          <Card className="lg:col-span-8 border-none shadow-xl">
             <CardHeader className="flex flex-row items-center justify-between border-b bg-accent/10">
               <div>
-                <CardTitle className="text-lg text-primary">Schedule for {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
-                <CardDescription>All confirmed and pending reservations.</CardDescription>
+                <CardTitle className="text-lg text-primary">Timeline: {format(selectedDate, 'MMMM d')}</CardTitle>
+                <CardDescription>1:00 AM to 12:00 PM</CardDescription>
               </div>
-              <Clock className="w-5 h-5 text-secondary" />
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="w-3 h-3 rounded-full bg-secondary" /> Confirmed
+                <div className="w-3 h-3 rounded-full bg-yellow-400" /> Pending
+              </div>
             </CardHeader>
-            <CardContent className="pt-6">
-              {roomBookingsOnSelectedDate.length === 0 ? (
-                <div className="py-24 text-center text-muted-foreground border border-dashed rounded-xl flex flex-col items-center justify-center bg-accent/5">
-                  <DoorOpen className="w-12 h-12 mx-auto mb-4 opacity-10" />
-                  <p className="font-bold text-lg text-primary/40">No Bookings Found</p>
-                  <p className="text-xs">This room is free for the selected day.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {roomBookingsOnSelectedDate.map((booking) => (
-                    <div 
-                      key={booking.id} 
-                      className={cn(
-                        "p-5 rounded-xl border flex items-center justify-between transition-all hover:translate-x-1",
-                        booking.status === 'confirmed' ? "bg-secondary/5 border-secondary/30 shadow-sm" : "bg-yellow-50 border-yellow-200"
-                      )}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={cn(
-                          "w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold shadow-md",
-                          booking.status === 'confirmed' ? "bg-secondary" : "bg-yellow-400"
-                        )}>
-                          <Clock className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <h4 className="font-black text-base text-primary">{booking.startTime} - {booking.endTime}</h4>
-                          <p className="text-sm font-medium text-muted-foreground">{booking.userName}</p>
-                          <Badge variant="outline" className="mt-1 text-[10px] uppercase">{booking.purpose}</Badge>
-                        </div>
+            <CardContent className="p-0">
+              <ScrollArea className="h-[600px] w-full">
+                <div className="relative p-6 pr-10">
+                  {/* Timeline Grid */}
+                  <div className="relative">
+                    {hours.map((hour) => (
+                      <div 
+                        key={hour} 
+                        className="flex items-start border-t border-dashed border-muted-foreground/20"
+                        style={{ height: `${HOUR_HEIGHT}px` }}
+                      >
+                        <span className="text-[10px] font-bold text-muted-foreground -mt-2 w-12 flex-shrink-0">
+                          {hour}:00 {hour === 12 ? 'PM' : 'AM'}
+                        </span>
                       </div>
-                      <Badge className={cn(
-                        "capitalize px-3 py-1",
-                        booking.status === 'confirmed' ? "bg-secondary text-secondary-foreground" : "bg-yellow-100 text-yellow-700 border-yellow-200"
-                      )}>
-                        {booking.status}
-                      </Badge>
+                    ))}
+                    
+                    {/* Final 12 PM marker */}
+                    <div className="flex items-start border-t border-dashed border-muted-foreground/20 w-full absolute bottom-0">
+                      <span className="text-[10px] font-bold text-muted-foreground -mt-2 w-12 flex-shrink-0">
+                        12:00 PM
+                      </span>
                     </div>
-                  ))}
+
+                    {/* Bookings Layer */}
+                    <div className="absolute top-0 left-12 right-0 bottom-0 pointer-events-none">
+                      {roomBookingsOnSelectedDate.map((booking) => {
+                        const { top, height } = calculateBookingPosition(booking.startTime, booking.endTime);
+                        
+                        // Only show if within 1am-12pm range
+                        if (top < 0 && top + height <= 0) return null;
+                        
+                        const actualTop = Math.max(0, top);
+                        const actualHeight = top < 0 ? height + top : height;
+
+                        return (
+                          <div
+                            key={booking.id}
+                            className={cn(
+                              "absolute left-2 right-2 rounded-lg p-3 shadow-md border pointer-events-auto transition-all hover:scale-[1.01] overflow-hidden",
+                              booking.status === 'confirmed' 
+                                ? "bg-secondary text-secondary-foreground border-white/20" 
+                                : "bg-yellow-400 text-yellow-900 border-yellow-500/30"
+                            )}
+                            style={{ 
+                              top: `${actualTop}px`, 
+                              height: `${actualHeight}px`,
+                              zIndex: 10 
+                            }}
+                          >
+                            <div className="flex flex-col h-full justify-between">
+                              <p className="text-xs font-black uppercase leading-tight truncate">
+                                {booking.purpose}
+                              </p>
+                              <div className="flex justify-between items-end opacity-80">
+                                <span className="text-[9px] font-bold">
+                                  {booking.startTime} - {booking.endTime}
+                                </span>
+                                <span className="text-[9px] font-medium hidden sm:inline">
+                                  {booking.userName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+              {roomBookingsOnSelectedDate.length === 0 && (
+                <div className="p-8 text-center bg-accent/5 border-t">
+                  <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                    <Info className="w-4 h-4" /> No bookings recorded for this time range.
+                  </p>
                 </div>
               )}
             </CardContent>

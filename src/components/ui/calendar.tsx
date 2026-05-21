@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -43,7 +42,7 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "h-10 w-10 p-0 font-bold aria-selected:opacity-100 rounded-full hover:bg-accent flex items-center justify-center transition-all"
         ),
-        selected: "bg-green-500 text-white hover:bg-green-600 hover:text-white focus:bg-green-600 focus:text-white shadow-md rounded-full scale-105",
+        selected: "bg-[#dcfce7] text-[#166534] hover:bg-[#dcfce7] hover:text-[#166534] focus:bg-[#dcfce7] focus:text-[#166534] shadow-none rounded-full scale-105",
         today: "text-primary font-black ring-2 ring-primary/10",
         outside: "opacity-0 pointer-events-none",
         disabled: "text-muted-foreground opacity-50",
@@ -57,7 +56,7 @@ function Calendar({
           return `${month} ${year}`;
         },
         formatWeekdayName: (date) => {
-          const names = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+          const names = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
           return names[date.getDay()];
         }
       }}
