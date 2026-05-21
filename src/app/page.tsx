@@ -130,7 +130,7 @@ export default function LoginPage() {
                   id="email" 
                   type="email" 
                   placeholder="*********@gordoncollege.edu.ph" 
-                  className="pl-10"
+                  className="pl-10 h-11"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -148,7 +148,7 @@ export default function LoginPage() {
                   id="password" 
                   type={showPassword ? "text" : "password"} 
                   placeholder="Enter your password" 
-                  className="pl-10 pr-10"
+                  className="pl-10 pr-10 h-11"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -168,7 +168,7 @@ export default function LoginPage() {
             </div>
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold group bg-primary text-white hover:opacity-90 shadow-md" 
+              className="w-full h-12 text-base font-semibold group bg-primary text-white hover:opacity-90 shadow-md mt-2" 
               disabled={loading}
             >
               {loading ? 'Authenticating...' : 'Sign In'}
@@ -176,7 +176,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="relative">
+          <div className="relative my-2">
             <div className="absolute inset-0 flex items-center">
               <Separator />
             </div>
@@ -213,8 +213,8 @@ export default function LoginPage() {
           </Button>
         </CardContent>
         <CardFooter className="bg-accent/30 border-t flex justify-center py-4">
-          <p className="text-xs text-muted-foreground">
-            Only authorized Gordon College accounts are permitted.
+          <p className="text-xs text-muted-foreground text-center">
+            Authorized Gordon College accounts only.
           </p>
         </CardFooter>
       </Card>

@@ -18,7 +18,6 @@ import {
   ChevronRight,
   ArrowLeft,
   Search,
-  Settings2
 } from 'lucide-react';
 import { 
   Dialog, 
@@ -92,25 +91,26 @@ export default function RoomsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Card className="border-none shadow-lg">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <Card className="lg:col-span-5 border-none shadow-lg h-full">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5 text-primary" />
                 Select Date
               </CardTitle>
+              <CardDescription>Click a day to view its specific schedule.</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex justify-center p-0 pb-6">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => date && setSelectedDate(date)}
-                className="rounded-md border shadow-sm mx-auto"
+                className="rounded-md border-none"
               />
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-2 border-none shadow-lg">
+          <Card className="lg:col-span-7 border-none shadow-lg min-h-[450px]">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-lg">Schedule for {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
@@ -120,9 +120,10 @@ export default function RoomsPage() {
             </CardHeader>
             <CardContent>
               {roomBookingsOnSelectedDate.length === 0 ? (
-                <div className="py-20 text-center text-muted-foreground border border-dashed rounded-xl">
+                <div className="py-24 text-center text-muted-foreground border border-dashed rounded-xl flex flex-col items-center justify-center">
                   <DoorOpen className="w-12 h-12 mx-auto mb-4 opacity-10" />
-                  <p>No bookings scheduled for this day.</p>
+                  <p className="font-medium">Free all day</p>
+                  <p className="text-xs">No bookings scheduled for this day.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -130,13 +131,13 @@ export default function RoomsPage() {
                     <div 
                       key={booking.id} 
                       className={cn(
-                        "p-4 rounded-xl border flex items-center justify-between transition-all",
-                        booking.status === 'confirmed' ? "bg-secondary/5 border-secondary/20" : "bg-yellow-50 border-yellow-100"
+                        "p-4 rounded-xl border flex items-center justify-between transition-all hover:scale-[1.01]",
+                        booking.status === 'confirmed' ? "bg-secondary/5 border-secondary/20 shadow-sm" : "bg-yellow-50 border-yellow-100"
                       )}
                     >
                       <div className="flex items-center gap-4">
                         <div className={cn(
-                          "w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold",
+                          "w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold shadow-sm",
                           booking.status === 'confirmed' ? "bg-secondary" : "bg-yellow-400"
                         )}>
                           <Clock className="w-5 h-5" />
@@ -146,8 +147,8 @@ export default function RoomsPage() {
                           <p className="text-xs text-muted-foreground">{booking.userName} • {booking.purpose}</p>
                         </div>
                       </div>
-                      <Badge variant={booking.status === 'confirmed' ? 'secondary' : 'outline'}>
-                        {booking.status.toUpperCase()}
+                      <Badge variant={booking.status === 'confirmed' ? 'secondary' : 'outline'} className="capitalize">
+                        {booking.status}
                       </Badge>
                     </div>
                   ))}
@@ -174,7 +175,7 @@ export default function RoomsPage() {
         {currentUser?.role === 'admin' && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-primary text-white hover:opacity-90 shadow-lg">
+              <Button className="bg-primary text-white hover:opacity-90 shadow-lg px-6 h-11">
                 <Plus className="w-4 h-4 mr-2" /> Add New Room
               </Button>
             </DialogTrigger>
@@ -207,7 +208,7 @@ export default function RoomsPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={handleAddRoom} className="w-full bg-secondary text-white">Save Facility</Button>
+                <Button onClick={handleAddRoom} className="w-full bg-secondary text-white h-11 text-base">Save Facility</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
