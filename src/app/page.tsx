@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from 'react';
@@ -100,7 +99,7 @@ export default function LoginPage() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="black"
-            strokeWidth="3"
+            strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"
             xmlns="http://www.w3.org/2000/svg"
