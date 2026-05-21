@@ -43,7 +43,7 @@ function Calendar({
         day_selected:
           "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white shadow-md",
         day_today: "text-blue-600 font-bold border border-blue-100",
-        day_outside: "invisible",
+        day_outside: "hidden", // Completely hide days outside the month as requested
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
