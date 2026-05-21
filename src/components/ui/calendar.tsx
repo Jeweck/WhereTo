@@ -30,14 +30,14 @@ function Calendar({
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
-        table: "w-full border-collapse space-y-1",
-        head_row: "grid grid-cols-7 w-full mb-2",
-        head_cell: "text-muted-foreground rounded-md w-full font-bold text-[0.7rem] uppercase text-center flex items-center justify-center h-8",
-        row: "grid grid-cols-7 w-full mt-1",
-        cell: "h-9 w-full text-center text-sm p-0 relative flex items-center justify-center focus-within:relative focus-within:z-20",
+        table: "w-full border-collapse table-fixed",
+        head_row: "w-full",
+        head_cell: "text-muted-foreground font-bold text-[0.7rem] uppercase h-10 text-center align-middle",
+        row: "w-full",
+        cell: "h-10 text-center text-sm p-0 relative focus-within:relative focus-within:z-20 align-middle",
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-accent rounded-full"
+          "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent rounded-full mx-auto flex items-center justify-center transition-all"
         ),
         day_range_end: "day-range-end",
         day_selected:
