@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from 'react';
@@ -28,7 +29,7 @@ import {
   DialogFooter
 } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { format, parse, differenceInMinutes, startOfDay } from 'date-fns';
+import { format, parse, differenceInMinutes } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -79,23 +80,27 @@ export default function RoomsPage() {
   };
 
   // Timeline Helper
-  const hours = Array.from({ length: 12 }, (_, i) => i + 1); // 1 to 12
+  const hours = Array.from({ length: 22 }, (_, i) => i + 1); // 1 AM to 10 PM roughly, covering the 1am-12pm requested view
   const HOUR_HEIGHT = 80;
 
   const calculateBookingPosition = (startTime: string, endTime: string) => {
-    const start = parse(startTime, 'HH:mm', new Date());
-    const end = parse(endTime, 'HH:mm', new Date());
-    
-    // Calculate minutes from 1:00 AM
-    const timelineStart = parse('01:00', 'HH:mm', new Date());
-    
-    const minutesFromStart = differenceInMinutes(start, timelineStart);
-    const durationMinutes = differenceInMinutes(end, start);
-    
-    const top = (minutesFromStart / 60) * HOUR_HEIGHT;
-    const height = (durationMinutes / 60) * HOUR_HEIGHT;
-    
-    return { top, height };
+    try {
+      const start = parse(startTime, 'HH:mm', new Date());
+      const end = parse(endTime, 'HH:mm', new Date());
+      
+      // Calculate minutes from 1:00 AM
+      const timelineStart = parse('01:00', 'HH:mm', new Date());
+      
+      const minutesFromStart = differenceInMinutes(start, timelineStart);
+      const durationMinutes = differenceInMinutes(end, start);
+      
+      const top = (minutesFromStart / 60) * HOUR_HEIGHT;
+      const height = (durationMinutes / 60) * HOUR_HEIGHT;
+      
+      return { top, height };
+    } catch (e) {
+      return { top: 0, height: 0 };
+    }
   };
 
   if (selectedRoomId && selectedRoom) {
@@ -138,9 +143,15 @@ export default function RoomsPage() {
                 <CardTitle className="text-lg text-primary">Timeline: {format(selectedDate, 'MMMM d')}</CardTitle>
                 <CardDescription>1:00 AM to 12:00 PM</CardDescription>
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <div className="w-3 h-3 rounded-full bg-secondary" /> Confirmed
-                <div className="w-3 h-3 rounded-full bg-yellow-400" /> Pending
+              <div className="flex items-center gap-4 text-xs font-semibold">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-[#dcfce7] border border-green-300" /> 
+                  <span className="text-green-800">Confirmed</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-yellow-400 border border-yellow-500" /> 
+                  <span className="text-yellow-800">Pending</span>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -148,19 +159,23 @@ export default function RoomsPage() {
                 <div className="relative p-6 pr-10">
                   {/* Timeline Grid */}
                   <div className="relative">
-                    {hours.map((hour) => (
-                      <div 
-                        key={hour} 
-                        className="flex items-start border-t border-dashed border-muted-foreground/20"
-                        style={{ height: `${HOUR_HEIGHT}px` }}
-                      >
-                        <span className="text-[10px] font-bold text-muted-foreground -mt-2 w-12 flex-shrink-0">
-                          {hour}:00 {hour === 12 ? 'PM' : 'AM'}
-                        </span>
-                      </div>
-                    ))}
+                    {hours.map((hour) => {
+                      const displayHour = hour > 12 ? hour - 12 : hour;
+                      const ampm = hour >= 12 ? 'PM' : 'AM';
+                      return (
+                        <div 
+                          key={hour} 
+                          className="flex items-start border-t border-dashed border-muted-foreground/20"
+                          style={{ height: `${HOUR_HEIGHT}px` }}
+                        >
+                          <span className="text-[10px] font-bold text-muted-foreground -mt-2 w-12 flex-shrink-0">
+                            {displayHour}:00 {ampm}
+                          </span>
+                        </div>
+                      );
+                    })}
                     
-                    {/* Final 12 PM marker */}
+                    {/* Final 12 PM marker if within range */}
                     <div className="flex items-start border-t border-dashed border-muted-foreground/20 w-full absolute bottom-0">
                       <span className="text-[10px] font-bold text-muted-foreground -mt-2 w-12 flex-shrink-0">
                         12:00 PM
@@ -172,37 +187,31 @@ export default function RoomsPage() {
                       {roomBookingsOnSelectedDate.map((booking) => {
                         const { top, height } = calculateBookingPosition(booking.startTime, booking.endTime);
                         
-                        // Only show if within 1am-12pm range
-                        if (top < 0 && top + height <= 0) return null;
-                        
-                        const actualTop = Math.max(0, top);
-                        const actualHeight = top < 0 ? height + top : height;
+                        // We only show bookings that fall within the visible range
+                        if (height <= 0) return null;
 
                         return (
                           <div
                             key={booking.id}
                             className={cn(
-                              "absolute left-2 right-2 rounded-lg p-3 shadow-md border pointer-events-auto transition-all hover:scale-[1.01] overflow-hidden",
+                              "absolute left-2 right-2 rounded-lg p-3 shadow-sm border pointer-events-auto transition-all hover:scale-[1.01] overflow-hidden",
                               booking.status === 'confirmed' 
-                                ? "bg-secondary text-secondary-foreground border-white/20" 
+                                ? "bg-[#dcfce7] text-green-900 border-green-200" 
                                 : "bg-yellow-400 text-yellow-900 border-yellow-500/30"
                             )}
                             style={{ 
-                              top: `${actualTop}px`, 
-                              height: `${actualHeight}px`,
+                              top: `${top}px`, 
+                              height: `${height}px`,
                               zIndex: 10 
                             }}
                           >
-                            <div className="flex flex-col h-full justify-between">
-                              <p className="text-xs font-black uppercase leading-tight truncate">
+                            <div className="flex flex-col h-full justify-center">
+                              <p className="text-xs font-black uppercase leading-tight text-center">
                                 {booking.purpose}
                               </p>
-                              <div className="flex justify-between items-end opacity-80">
+                              <div className="flex justify-between items-end opacity-80 mt-1">
                                 <span className="text-[9px] font-bold">
                                   {booking.startTime} - {booking.endTime}
-                                </span>
-                                <span className="text-[9px] font-medium hidden sm:inline">
-                                  {booking.userName}
                                 </span>
                               </div>
                             </div>
@@ -216,7 +225,7 @@ export default function RoomsPage() {
               {roomBookingsOnSelectedDate.length === 0 && (
                 <div className="p-8 text-center bg-accent/5 border-t">
                   <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                    <Info className="w-4 h-4" /> No bookings recorded for this time range.
+                    <Info className="w-4 h-4" /> No bookings recorded for this date.
                   </p>
                 </div>
               )}
