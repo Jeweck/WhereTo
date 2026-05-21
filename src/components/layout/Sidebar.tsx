@@ -10,7 +10,8 @@ import {
   CalendarCheck, 
   Settings, 
   LogOut,
-  ShieldCheck
+  ShieldCheck,
+  DoorOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ export function Sidebar() {
   const menuItems = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Facilities', href: '/dashboard/facilities', icon: Building2 },
+    { label: 'Rooms', href: '/dashboard/rooms', icon: DoorOpen },
     { label: 'My Bookings', href: '/dashboard/bookings', icon: CalendarCheck },
     { label: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
