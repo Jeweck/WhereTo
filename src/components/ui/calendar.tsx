@@ -30,11 +30,11 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100"
         ),
-        table: "w-full border-collapse",
-        head_row: "grid grid-cols-7 mb-2",
-        head_cell: "text-muted-foreground font-medium text-[0.8rem] h-9 flex items-center justify-center uppercase",
+        table: "w-full border-collapse space-y-1",
+        head_row: "grid grid-cols-7 w-full mb-2",
+        head_cell: "text-muted-foreground font-semibold text-[0.75rem] h-9 flex items-center justify-center uppercase",
         row: "grid grid-cols-7 w-full mt-1",
-        cell: "h-9 w-9 flex items-center justify-center text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+        cell: "h-9 w-full flex items-center justify-center p-0 relative focus-within:relative focus-within:z-20",
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-full hover:bg-accent flex items-center justify-center transition-all"
@@ -57,8 +57,9 @@ function Calendar({
           return `${month} ${year}`;
         },
         formatWeekdayName: (date) => {
-          // Return single letter for the weekday (S, M, T, W, T, F, S)
-          return date.toLocaleString('en-US', { weekday: 'narrow' });
+          // Return short weekday names (Su, Mo, Tu, We, Th, Fr, Sa)
+          const names = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+          return names[date.getDay()];
         }
       }}
       components={{

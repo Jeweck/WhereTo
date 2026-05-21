@@ -69,7 +69,8 @@ export default function RoomsPage() {
     upsertFacility({
       ...newRoom,
       equipment: newRoom.equipment.split(',').map(e => e.trim()),
-      imageUrl: ''
+      imageUrl: '',
+      description: newRoom.description || `${newRoom.purpose} space.`
     });
 
     toast({ title: "Room Added", description: `${newRoom.name} is now available in the inventory.` });
@@ -92,7 +93,7 @@ export default function RoomsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <Card className="lg:col-span-5 border-none shadow-xl h-full overflow-hidden">
+          <Card className="lg:col-span-5 border-none shadow-xl overflow-hidden">
             <CardHeader className="bg-primary text-white">
               <CardTitle className="text-lg flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5" />
@@ -100,13 +101,16 @@ export default function RoomsPage() {
               </CardTitle>
               <CardDescription className="text-white/70">Pick a day to view its schedule.</CardDescription>
             </CardHeader>
-            <CardContent className="flex justify-center p-4">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
-                className="rounded-md border-none w-full"
-              />
+            <CardContent className="flex justify-center p-6 bg-white">
+              <div className="w-full max-w-xs mx-auto">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  className="rounded-md border-none p-0"
+                  showOutsideDays={false}
+                />
+              </div>
             </CardContent>
           </Card>
 
