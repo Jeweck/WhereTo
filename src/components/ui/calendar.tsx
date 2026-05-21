@@ -30,7 +30,7 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100"
         ),
-        table: "w-full border-collapse space-y-1",
+        table: "w-full border-collapse",
         head_row: "grid grid-cols-7 w-full mb-2",
         head_cell: "text-muted-foreground font-semibold text-[0.75rem] h-9 flex items-center justify-center uppercase",
         row: "grid grid-cols-7 w-full mt-1",
@@ -57,7 +57,6 @@ function Calendar({
           return `${month} ${year}`;
         },
         formatWeekdayName: (date) => {
-          // Return short weekday names (Su, Mo, Tu, We, Th, Fr, Sa)
           const names = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
           return names[date.getDay()];
         }
