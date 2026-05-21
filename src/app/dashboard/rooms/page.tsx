@@ -92,38 +92,38 @@ export default function RoomsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <Card className="lg:col-span-5 border-none shadow-lg h-full">
-            <CardHeader>
+          <Card className="lg:col-span-5 border-none shadow-xl h-full overflow-hidden">
+            <CardHeader className="bg-primary text-white">
               <CardTitle className="text-lg flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-primary" />
+                <CalendarIcon className="w-5 h-5" />
                 Select Date
               </CardTitle>
-              <CardDescription>Click a day to view its specific schedule.</CardDescription>
+              <CardDescription className="text-white/70">Pick a day to view its schedule.</CardDescription>
             </CardHeader>
-            <CardContent className="flex justify-center p-0 pb-6">
+            <CardContent className="flex justify-center p-4">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => date && setSelectedDate(date)}
-                className="rounded-md border-none"
+                className="rounded-md border-none w-full"
               />
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-7 border-none shadow-lg min-h-[450px]">
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card className="lg:col-span-7 border-none shadow-xl min-h-[450px]">
+            <CardHeader className="flex flex-row items-center justify-between border-b bg-accent/10">
               <div>
-                <CardTitle className="text-lg">Schedule for {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
-                <CardDescription>View all confirmed and pending reservations.</CardDescription>
+                <CardTitle className="text-lg text-primary">Schedule for {format(selectedDate, 'MMMM d, yyyy')}</CardTitle>
+                <CardDescription>All confirmed and pending reservations.</CardDescription>
               </div>
-              <Clock className="w-5 h-5 text-muted-foreground" />
+              <Clock className="w-5 h-5 text-secondary" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               {roomBookingsOnSelectedDate.length === 0 ? (
-                <div className="py-24 text-center text-muted-foreground border border-dashed rounded-xl flex flex-col items-center justify-center">
+                <div className="py-24 text-center text-muted-foreground border border-dashed rounded-xl flex flex-col items-center justify-center bg-accent/5">
                   <DoorOpen className="w-12 h-12 mx-auto mb-4 opacity-10" />
-                  <p className="font-medium">Free all day</p>
-                  <p className="text-xs">No bookings scheduled for this day.</p>
+                  <p className="font-bold text-lg text-primary/40">No Bookings Found</p>
+                  <p className="text-xs">This room is free for the selected day.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -131,23 +131,27 @@ export default function RoomsPage() {
                     <div 
                       key={booking.id} 
                       className={cn(
-                        "p-4 rounded-xl border flex items-center justify-between transition-all hover:scale-[1.01]",
-                        booking.status === 'confirmed' ? "bg-secondary/5 border-secondary/20 shadow-sm" : "bg-yellow-50 border-yellow-100"
+                        "p-5 rounded-xl border flex items-center justify-between transition-all hover:translate-x-1",
+                        booking.status === 'confirmed' ? "bg-secondary/5 border-secondary/30 shadow-sm" : "bg-yellow-50 border-yellow-200"
                       )}
                     >
                       <div className="flex items-center gap-4">
                         <div className={cn(
-                          "w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold shadow-sm",
+                          "w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold shadow-md",
                           booking.status === 'confirmed' ? "bg-secondary" : "bg-yellow-400"
                         )}>
-                          <Clock className="w-5 h-5" />
+                          <Clock className="w-6 h-6" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-sm">{booking.startTime} - {booking.endTime}</h4>
-                          <p className="text-xs text-muted-foreground">{booking.userName} • {booking.purpose}</p>
+                          <h4 className="font-black text-base text-primary">{booking.startTime} - {booking.endTime}</h4>
+                          <p className="text-sm font-medium text-muted-foreground">{booking.userName}</p>
+                          <Badge variant="outline" className="mt-1 text-[10px] uppercase">{booking.purpose}</Badge>
                         </div>
                       </div>
-                      <Badge variant={booking.status === 'confirmed' ? 'secondary' : 'outline'} className="capitalize">
+                      <Badge className={cn(
+                        "capitalize px-3 py-1",
+                        booking.status === 'confirmed' ? "bg-secondary text-secondary-foreground" : "bg-yellow-100 text-yellow-700 border-yellow-200"
+                      )}>
                         {booking.status}
                       </Badge>
                     </div>
