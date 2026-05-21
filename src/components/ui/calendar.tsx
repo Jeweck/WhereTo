@@ -19,35 +19,35 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-4", className)}
+      className={cn("p-4 bg-white rounded-xl", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-        month: "space-y-4 w-full",
-        caption: "flex justify-between items-center px-2 mb-6",
-        caption_label: "text-lg font-bold text-foreground",
-        nav: "flex items-center space-x-1",
-        nav_button: cn(
+        months: "relative flex flex-col gap-y-4",
+        month: "space-y-6",
+        month_caption: "flex justify-between items-center px-1",
+        caption_label: "text-xl font-black text-primary",
+        nav: "flex items-center gap-1",
+        button_previous: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-7 w-7 bg-transparent p-0 opacity-70 hover:opacity-100"
+          "h-9 w-9 p-0 opacity-70 hover:opacity-100 rounded-full"
         ),
-        table: "w-full border-collapse",
-        head_row: "grid grid-cols-7 w-full mb-2",
-        head_cell: "text-muted-foreground font-semibold text-[0.75rem] h-9 flex items-center justify-center uppercase",
-        row: "grid grid-cols-7 w-full mt-1",
-        cell: "h-9 w-full flex items-center justify-center p-0 relative focus-within:relative focus-within:z-20",
-        day: cn(
+        button_next: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-full hover:bg-accent flex items-center justify-center transition-all"
+          "h-9 w-9 p-0 opacity-70 hover:opacity-100 rounded-full"
         ),
-        day_range_end: "day-range-end",
-        day_selected:
-          "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white shadow-md",
-        day_today: "text-blue-600 font-bold border border-blue-100",
-        day_outside: "hidden", // Completely hide days outside the month as requested
-        day_disabled: "text-muted-foreground opacity-50",
-        day_range_middle:
-          "aria-selected:bg-accent aria-selected:text-accent-foreground",
-        day_hidden: "invisible",
+        month_grid: "w-full border-collapse",
+        weekdays: "flex w-full mb-4",
+        weekday: "text-muted-foreground font-bold text-[0.75rem] flex-1 text-center uppercase tracking-widest",
+        week: "flex w-full mt-1",
+        day: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 flex-1 flex items-center justify-center h-10",
+        day_button: cn(
+          buttonVariants({ variant: "ghost" }),
+          "h-10 w-10 p-0 font-bold aria-selected:opacity-100 rounded-full hover:bg-accent flex items-center justify-center transition-all"
+        ),
+        selected: "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white shadow-lg scale-110",
+        today: "text-blue-600 font-black ring-2 ring-blue-100",
+        outside: "opacity-0 pointer-events-none",
+        disabled: "text-muted-foreground opacity-50",
+        hidden: "invisible",
         ...classNames,
       }}
       formatters={{
@@ -62,8 +62,8 @@ function Calendar({
         }
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-5 w-5" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-5 w-5" />,
+        IconLeft: () => <ChevronLeft className="h-5 w-5" />,
+        IconRight: () => <ChevronRight className="h-5 w-5" />,
       }}
       {...props}
     />
