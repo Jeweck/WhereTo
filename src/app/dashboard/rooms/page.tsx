@@ -80,7 +80,7 @@ export default function RoomsPage() {
   };
 
   // Timeline Helper
-  const hours = Array.from({ length: 22 }, (_, i) => i + 1); // 1 AM to 10 PM roughly, covering the 1am-12pm requested view
+  const hours = Array.from({ length: 22 }, (_, i) => i + 1); // Starts at 1 AM, ends with segment starting 10 PM
   const HOUR_HEIGHT = 80;
 
   const calculateBookingPosition = (startTime: string, endTime: string) => {
@@ -141,7 +141,7 @@ export default function RoomsPage() {
             <CardHeader className="flex flex-row items-center justify-between border-b bg-accent/10">
               <div>
                 <CardTitle className="text-lg text-primary">Timeline: {format(selectedDate, 'MMMM d')}</CardTitle>
-                <CardDescription>1:00 AM to 12:00 PM</CardDescription>
+                <CardDescription>1:00 AM to 11:00 PM</CardDescription>
               </div>
               <div className="flex items-center gap-4 text-xs font-semibold">
                 <div className="flex items-center gap-1.5">
@@ -175,10 +175,10 @@ export default function RoomsPage() {
                       );
                     })}
                     
-                    {/* Final 12 PM marker if within range */}
+                    {/* Final 11 PM marker */}
                     <div className="flex items-start border-t border-dashed border-muted-foreground/20 w-full absolute bottom-0">
                       <span className="text-[10px] font-bold text-muted-foreground -mt-2 w-12 flex-shrink-0">
-                        12:00 PM
+                        11:00 PM
                       </span>
                     </div>
 
