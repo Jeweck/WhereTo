@@ -86,7 +86,7 @@ export default function DashboardOverview() {
             {myBookings.length === 0 ? (
               <div className="py-12 text-center text-muted-foreground">
                 <CalendarCheck className="w-12 h-12 mx-auto mb-4 opacity-10" />
-                <p>No upcoming reservations found.</p>
+                <p>No Upcoming Reservations Found.</p>
               </div>
             ) : (
               <div className="space-y-4">
