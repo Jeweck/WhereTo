@@ -109,45 +109,6 @@ export default function DashboardOverview() {
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg">Resource Utilization</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Lecture Halls</span>
-                <span className="font-semibold">85%</span>
-              </div>
-              <Progress value={85} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Meeting Rooms</span>
-                <span className="font-semibold">42%</span>
-              </div>
-              <Progress value={42} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Study Suites</span>
-                <span className="font-semibold">91%</span>
-              </div>
-              <Progress value={91} className="h-2" />
-            </div>
-            <div className="pt-4 border-t">
-              <div className="bg-primary p-4 rounded-xl text-white">
-                <h5 className="font-bold mb-1">AI Suggestion</h5>
-                <p className="text-xs text-white/80 leading-relaxed">
-                  Study suites are currently at peak demand. We recommend booking Study Suite 101 for sessions after 4:00 PM.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
